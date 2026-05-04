@@ -4,6 +4,7 @@
 # - REPO => Repository name
 # - COMMON_SECRETS => Common secrets (in the ci/data/common/<path> vault path): {{ Env Variable Name }}={{ Secret Path }}:{{ Secret Key }}
 # - REPO_SECRETS => Repo secrets (in the ci/data/repo/${REPO}/<path> vault path): {{ Env Variable Name }}={{ Secret Path }}:{{ Secret Key }}
+# - DATA_SOURCES_SECRETS => Provisioned datasource secrets (in the ci/data/data-sources/${REPO}/<path> vault path): {{ Env Variable Name }}={{ Secret Path }}:{{ Secret Key }}
 # Output format: "{{ Secret Path }} {{ Secret Key }} | {{ Env Variable Name }}" in the $GITHUB_OUTPUT file
 
 # Check if the REPO environment variable is set
@@ -18,7 +19,7 @@ if [ -z "$GITHUB_OUTPUT" ]; then
 	exit 1
 fi
 
-readonly COMMON_SECRETS GITHUB_OUTPUT REPO REPO_SECRETS
+readonly COMMON_SECRETS GITHUB_OUTPUT REPO REPO_SECRETS DATA_SOURCES_SECRETS
 
 RESULT=""
 
@@ -53,6 +54,15 @@ if [ -n "$REPO_SECRETS" ]; then
 	for repo_secret in $REPO_SECRETS; do
 		split_string "$repo_secret"
 		RESULT="${RESULT}ci/data/repo/$REPO/$secret_path $secret_key | $env_variable_name;\n"
+	done
+fi
+
+# Translate the data sources secrets
+if [ -n "$DATA_SOURCES_SECRETS" ]; then
+    SHORT_REPO=${REPO#grafana/}
+	for data_sources_secret in $DATA_SOURCES_SECRETS; do
+		split_string "$data_sources_secret"
+		RESULT="${RESULT}ci/data/data-sources/$SHORT_REPO/$secret_path $secret_key | $env_variable_name;\n"
 	done
 fi
 

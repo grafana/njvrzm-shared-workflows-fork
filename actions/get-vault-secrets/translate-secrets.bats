@@ -7,8 +7,8 @@ setup() {
 	export COMMON_SECRETS="SECRET1=secret1:key1
 SECRET2=subfolder/secret2:key2"
 	export REPO_SECRETS="SECRET3=secret3:key3
-SECRET4=subfolder/secret4:key4
-"
+SECRET4=subfolder/secret4:key4"
+	export DATA_SOURCES_SECRETS="SECRET5=dsinstance/secret5:key5"
 }
 
 # Clean up temporary files after tests
@@ -36,7 +36,8 @@ teardown() {
 ci/data/common/secret1 key1 | SECRET1;
 ci/data/common/subfolder/secret2 key2 | SECRET2;
 ci/data/repo/grafana/myrepo/secret3 key3 | SECRET3;
-ci/data/repo/grafana/myrepo/subfolder/secret4 key4 | SECRET4;" ]
+ci/data/repo/grafana/myrepo/subfolder/secret4 key4 | SECRET4;
+ci/data/data-sources/myrepo/dsinstance/secret5 key5 | SECRET5;" ]
 
 	echo -e "\nGITHUB_OUTPUT:\n$(cat "$GITHUB_OUTPUT")" >&3
 	[ "$(cat "$GITHUB_OUTPUT")" = "secrets<<EOF
@@ -44,5 +45,6 @@ ci/data/common/secret1 key1 | SECRET1;
 ci/data/common/subfolder/secret2 key2 | SECRET2;
 ci/data/repo/grafana/myrepo/secret3 key3 | SECRET3;
 ci/data/repo/grafana/myrepo/subfolder/secret4 key4 | SECRET4;
+ci/data/data-sources/myrepo/dsinstance/secret5 key5 | SECRET5;
 EOF" ]
 }

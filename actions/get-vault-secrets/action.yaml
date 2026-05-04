@@ -11,13 +11,23 @@ inputs:
         ENVVAR1=secretpath:key
         ENVVAR2=secretpath:key2
       ```
+  data_sources_secrets:
+    description: |
+      Datasource-specific secret mapping. Only Grafana Labs employees can list these secrets in Vault.
+      These secrets are stored in the `ci/data/data-sources/<repo name>/<secret path>` path in Vault.
+      Ex:
+      ```
+      data_sources_secrets: |
+        ENVVAR1=mysql:host
+        ENVVAR2=mysql:password
+      ```
   common_secrets:
     description: |
       Common secrets mapping. Only Grafana Labs employees can list these secrets in Vault.
       These secrets are stored in the `ci/data/common/<secret path>` path in Vault.
       Ex:
       ```
-      repo_secrets: |
+      common_secrets: |
         ENVVAR1=secretpath:key
         ENVVAR2=secretpath:key2
       ```
@@ -60,6 +70,7 @@ runs:
       run: "${GITHUB_ACTION_PATH}/translate-secrets.bash"
       env:
         REPO_SECRETS: ${{ inputs.repo_secrets }}
+        DATA_SOURCES_SECRETS: ${{ inputs.data_sources_secrets }}
         COMMON_SECRETS: ${{ inputs.common_secrets }}
         REPO: ${{ github.repository }}
 
